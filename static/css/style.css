@@ -1,0 +1,373 @@
+/* DeckWarz - Official Styles */
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #13141f;
+    --text-primary: #ffffff;
+    --text-muted: #8b8ea5;
+
+    /* Dimensions for premium 9:16 deck box aspect ratio */
+    --card-w: 240px;
+    --card-h: 426px;
+
+    --transition-smooth: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-primary);
+    background-image: url('../../Frames/Background/new_cricket_bg.jpg');
+    background-size: cover;
+    background-position: top center;
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+/* Atmospheric Background */
+.bg-blur-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.3;
+}
+
+.orb-1 {
+    width: 600px;
+    height: 600px;
+    background: #00f3ff;
+    top: -100px;
+    left: -100px;
+}
+
+.orb-2 {
+    width: 700px;
+    height: 700px;
+    background: #bc13fe;
+    bottom: -200px;
+    right: -100px;
+}
+
+.arena-container {
+    width: 100%;
+    max-width: 1800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.neon-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+}
+
+.main-logo {
+    position: absolute;
+    top: 2vw;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45vw;
+    max-width: 900px;
+    filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.85)) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+    z-index: 5;
+    pointer-events: none;
+}
+
+.deck-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 40px 40px;
+    justify-content: center;
+    padding-top: 250px;
+    padding-bottom: 80px;
+}
+
+/* Country Title Labels */
+.country-label {
+    margin-top: 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.7);
+    transition: all 0.4s ease;
+    text-align: center;
+}
+
+.deck-wrapper:hover .country-label {
+    color: var(--text-primary);
+    text-shadow: 0 0 15px var(--deck-color);
+    transform: translateY(5px);
+}
+
+.deck-wrapper.selected .country-label {
+    color: var(--deck-color);
+    text-shadow: 0 0 20px var(--deck-color);
+    transform: translateY(15px) scale(1.1);
+}
+
+.deck-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+/* ==================================
+   ANIMATION: THE CYBER FLIP
+   ================================== */
+.deck-card {
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    background: transparent;
+}
+
+.frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.start-frame {
+    transform: rotateY(0deg);
+}
+
+.end-frame {
+    transform: rotateY(180deg);
+}
+
+/* Neon Interaction Glow Overlay (On the back of the card) */
+.interactive-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 3px solid var(--deck-color);
+    border-radius: 12px;
+    box-shadow: 0 0 15px var(--deck-color), inset 0 0 15px var(--deck-color);
+    opacity: 0;
+    pointer-events: none;
+    transform: rotateY(180deg);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: opacity 0.4s ease;
+}
+
+/* INTERACTION EFFECTS (Stable hit area to fix flickering) */
+.deck-wrapper:hover .deck-card {
+    transform: rotateY(180deg) scale(1.05);
+}
+
+.deck-wrapper:hover .interactive-glow {
+    opacity: 1;
+    animation: pulse 1.5s infinite alternate;
+}
+
+/* SELECTED STATE */
+.deck-wrapper.selected {
+    z-index: 10;
+}
+
+.deck-wrapper.selected .deck-card {
+    transform: rotateY(180deg) scale(1.18);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.8);
+}
+
+.deck-wrapper.selected .interactive-glow {
+    opacity: 1;
+    border-width: 4px;
+    animation: pulse-selected 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 10px var(--deck-color), inset 0 0 10px var(--deck-color);
+    }
+
+    100% {
+        box-shadow: 0 0 30px var(--deck-color), inset 0 0 30px var(--deck-color);
+    }
+}
+
+@keyframes pulse-selected {
+    0% {
+        box-shadow: 0 0 20px var(--deck-color), inset 0 0 20px var(--deck-color);
+    }
+
+    100% {
+        box-shadow: 0 0 50px var(--deck-color), inset 0 0 50px var(--deck-color);
+    }
+}
+
+/* ==================================
+   ACTION BAR & START WAR BUTTON
+   ================================== */
+.action-bar {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    z-index: 100;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.action-bar.hidden {
+    transform: translate(-50%, 150px);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.selection-counter {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 20px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#selected-count {
+    color: #00f3ff;
+    font-size: 1.4rem;
+}
+
+.neon-button {
+    background: transparent;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 4px;
+    padding: 15px 50px;
+    border: 3px solid #bc13fe;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px #bc13fe, inset 0 0 15px #bc13fe;
+    text-shadow: 0 0 10px #bc13fe;
+    transition: all 0.3s ease;
+    animation: neon-pulse 1.5s infinite alternate;
+}
+
+.neon-button:hover {
+    background: #bc13fe;
+    color: #fff;
+    box-shadow: 0 0 30px #bc13fe, 0 0 60px #bc13fe;
+    text-shadow: none;
+    transform: scale(1.05);
+}
+
+.neon-button:active {
+    transform: scale(0.95);
+}
+
+@keyframes neon-pulse {
+    0% {
+        box-shadow: 0 0 10px #bc13fe, inset 0 0 10px #bc13fe;
+    }
+
+    100% {
+        box-shadow: 0 0 25px #bc13fe, inset 0 0 25px #bc13fe;
+    }
+}
+
+/* ==================================
+   ERROR ANIMATIONS
+   ================================== */
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translateX(-4px);
+    }
+
+    20%,
+    80% {
+        transform: translateX(6px);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translateX(-8px);
+    }
+
+    40%,
+    60% {
+        transform: translateX(8px);
+    }
+}
+
+.error-shake {
+    animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both !important;
+}

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeckWarz - Option B Prototype</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <main class="arena-container">
+        <header>
+            <h1 class="neon-title">SELECT YOUR DECK</h1>
+            <p class="subtitle">Hover over a deck box to see the Option B native animation effects</p>
+        </header>
+
+        <div class="deck-grid">
+
+            <!-- Deck Box: The 3D Portal Crossfade -->
+            <div class="deck-wrapper">
+                <div class="deck-card type-portal">
+                    <div class="card-inner">
+                        <img src="static/images/start.png" alt="Start Frame" class="frame start-frame">
+                        <img src="static/images/end.png" alt="End Frame" class="frame end-frame">
+                        <div class="overlay-glare"></div>
+                    </div>
+                </div>
+                <h3 class="deck-name">The Portal Crossfade</h3>
+                <p class="deck-desc">Smooth transition + Glass Glare</p>
+            </div>
+
+            <!-- Deck Box: The 3D Flip Reveal -->
+            <div class="deck-wrapper" style="--deck-color: #ff9933;">
+                <div class="deck-card type-flip">
+                    <div class="card-inner-flip">
+                        <div class="flip-front">
+                            <img src="static/images/start.png" alt="Start Frame" class="frame">
+                        </div>
+                        <div class="flip-back">
+                            <img src="static/images/end.png" alt="End Frame" class="frame">
+                            <div class="neon-border-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="deck-name">The Cyber Flip</h3>
+                <p class="deck-desc">Full 3D rotation + Neon Pulse back</p>
+            </div>
+
+            <!-- Deck Box: The Power Surge Wipe -->
+            <div class="deck-wrapper">
+                <div class="deck-card type-surge">
+                    <div class="card-inner">
+                        <img src="static/images/start.png" alt="Start Frame" class="frame start-frame">
+                        <div class="surge-mask">
+                            <img src="static/images/end.png" alt="End Frame" class="frame end-frame">
+                        </div>
+                        <div class="scanline"></div>
+                    </div>
+                </div>
+                <h3 class="deck-name">The Power Surge</h3>
+                <p class="deck-desc">Vertical holographic wipe effect</p>
+            </div>
+
+        </div>
+    </main>
+</body>
+
+</html>
