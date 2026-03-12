@@ -1,10 +1,13 @@
 __pycache__/
 *.pyc
-generation_log.txt
-.env
+*.pyo
+venv/
 .venv/
 env/
-venv/
+.env
 .vscode/
 .idea/
 *.log
+generation_log.txt
+test_hf_flux.jpg
+tools/

@@ -4,7 +4,7 @@ from game_logic import GameManager
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret-cricket-key'
+app.config['SECRET_KEY'] = os.environ.get('DECKWARZ_SECRET_KEY', 'dev-fallback-key-change-in-prod')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Initialize GameManager with the merged dataset
