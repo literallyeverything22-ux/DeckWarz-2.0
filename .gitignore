@@ -1,4 +1,10 @@
-cric_venv/
-# macOS
-.DS_Store
-.github/workflows
+__pycache__/
+*.pyc
+generation_log.txt
+.env
+.venv/
+env/
+venv/
+.vscode/
+.idea/
+*.log

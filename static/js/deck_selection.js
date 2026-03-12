@@ -40,12 +40,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Start War Button Event Listener (Placeholder for next step)
+    // Check if we are joining a room
+    const urlParams = new URLSearchParams(window.location.search);
+    const existingRoomId = urlParams.get('room');
+    
     const startWarBtn = document.getElementById('start-war-btn');
+    const actionDesc = document.getElementById('action-desc');
+
+    if (existingRoomId && startWarBtn && actionDesc) {
+        startWarBtn.innerText = "JOIN WAR";
+        actionDesc.innerText = "Join your friend's game room";
+    }
+
+    // Start War Button Event Listener
     if (startWarBtn) {
         startWarBtn.addEventListener('click', () => {
             console.log("Starting War with nations:", selectedDecks);
-            // Drafting logic will go here
+            const query = encodeURIComponent(JSON.stringify(selectedDecks));
+            // Use existing room ID if present, otherwise generate a new one
+            const roomId = existingRoomId || ("room_" + Math.random().toString(36).substring(2, 8));
+            window.location.href = `/game?room=${roomId}&decks=${query}`;
         });
     }
 });

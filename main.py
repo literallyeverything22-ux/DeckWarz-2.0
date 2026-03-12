@@ -1,40 +1,25 @@
-from flask import Flask, jsonify, render_template
-import scraper
+from flask import Flask
+from flask_socketio import SocketIO
+from game_logic import GameManager
+import os
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret-cricket-key'
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-@app.route('/players/<player_name>', methods=['GET'])
-def get_player(player_name):
-    player_data = scraper.get_player_profile(player_name)
-    
-    # If standard error is returned
-    if "error" in player_data:
-        return jsonify(player_data), 404
-        
-    return jsonify(player_data)
+# Initialize GameManager with the merged dataset
+data_path = os.path.join("data", "t20i_players_stats_merged.json")
+game_manager = GameManager(data_path)
 
-@app.route('/schedule')
-def schedule():
-    matches = scraper.get_schedule()
-    
-    if isinstance(matches, dict) and "error" in matches:
-        return jsonify(matches), 500
-        
-    return jsonify(matches)
+# Import and register Blueprints
+from routes.hub import hub_bp
+from routes.game import game_bp, register_socket_events
 
+app.register_blueprint(hub_bp)
+app.register_blueprint(game_bp)
 
-@app.route('/live')
-def live_matches():
-    live_data = scraper.get_live_matches()
-    
-    if isinstance(live_data, dict) and "error" in live_data:
-        return jsonify(live_data), 500
-        
-    return jsonify(live_data)
-
-@app.route('/')
-def website():
-    return render_template('index.html')
+# Register Socket.IO events for the game
+register_socket_events(socketio, game_manager)
 
 if __name__ =="__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True)

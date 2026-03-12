@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeckWarz - Choose Your Nation</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Orbitron:wght@700;900&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- AI Generation Progress Bar (Fixed top right) -->
+    <div id="ai-progress-container"
+        style="position: fixed; top: 20px; right: 20px; background: rgba(10, 10, 15, 0.9); border: 2px solid var(--team-color, #00f3ff); padding: 15px; border-radius: 10px; z-index: 1000; color: white; font-family: 'Orbitron', sans-serif; min-width: 280px; text-align: center; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); display: none;">
+        <div
+            style="font-size: 0.9rem; margin-bottom: 10px; color: #00f3ff; text-shadow: 0 0 5px #00f3ff; letter-spacing: 1px;">
+            AI AVATAR GENERATION</div>
+        <div
+            style="width: 100%; height: 12px; background: #222; border-radius: 6px; overflow: hidden; margin-bottom: 8px; border: 1px solid #444;">
+            <div id="ai-progress-fill"
+                style="width: 0%; height: 100%; background: linear-gradient(90deg, #00f3ff, #b620e0); box-shadow: 0 0 10px #00f3ff; transition: width 0.5s ease-out;">
+            </div>
+        </div>
+        <div id="ai-progress-text" style="font-size: 0.8rem; color: #ccc;">0% (0 / 0)</div>
+    </div>
+    <!-- Overlay that blurs the background but leaves the top (logo area) clear -->
+    <div class="bg-blur-overlay"></div>
+
+    <div class="background-effects">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <main class="arena-container">
+        <header>
+            <img src="/static/images/Frames/Background/Name.png" alt="DECK WARZ - SELECT YOUR NATION" class="main-logo">
+        </header>
+
+        <div class="deck-grid">
+
+            <!-- India -->
+            <div class="deck-wrapper" style="--deck-color: #00a8ff;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/IND start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/IND end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">India</h3>
+            </div>
+
+            <!-- Australia -->
+            <div class="deck-wrapper" style="--deck-color: #FFCD00;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/AUS start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/AUS end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Australia</h3>
+            </div>
+
+            <!-- England -->
+            <div class="deck-wrapper" style="--deck-color: #ff4757;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/ENG start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/ENG end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">England</h3>
+            </div>
+
+            <!-- Pakistan -->
+            <div class="deck-wrapper" style="--deck-color: #2ed573;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/PCB start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/PCB end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Pakistan</h3>
+            </div>
+
+            <!-- South Africa -->
+            <div class="deck-wrapper" style="--deck-color: #2bad60;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/SA start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/SA end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">South Africa</h3>
+            </div>
+
+            <!-- New Zealand -->
+            <div class="deck-wrapper" style="--deck-color: #dfdfdf;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/NZ start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/NZ end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">New Zealand</h3>
+            </div>
+
+            <!-- Sri Lanka -->
+            <div class="deck-wrapper" style="--deck-color: #1e90ff;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/SL start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/SL end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Sri Lanka</h3>
+            </div>
+
+            <!-- West Indies -->
+            <div class="deck-wrapper" style="--deck-color: #ff6b81;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/WI start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/WI end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">West Indies</h3>
+            </div>
+
+            <!-- Bangladesh -->
+            <div class="deck-wrapper" style="--deck-color: #2ed573;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/BNG start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/BNG end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Bangladesh</h3>
+            </div>
+
+            <!-- Afghanistan -->
+            <div class="deck-wrapper" style="--deck-color: #5352ed;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/AFG start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/AFG end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Afghanistan</h3>
+            </div>
+
+            <!-- Ireland -->
+            <div class="deck-wrapper" style="--deck-color: #7bed9f;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/IRE start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/IRE end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Ireland</h3>
+            </div>
+
+            <!-- Zimbabwe -->
+            <div class="deck-wrapper" style="--deck-color: #ff4757;">
+                <div class="deck-card">
+                    <img src="/static/images/Frames/ZIM start.png" class="frame start-frame">
+                    <img src="/static/images/Frames/ZIM end.png" class="frame end-frame">
+                    <div class="interactive-glow"></div>
+                </div>
+                <h3 class="country-label">Zimbabwe</h3>
+            </div>
+
+        </div>
+
+        <!-- Action Bar for Start War Button -->
+        <div class="action-bar hidden" id="action-bar">
+            <div class="selection-counter">
+                <span id="selected-count">0</span> / 5 NATIONS SELECTED
+            </div>
+            <div id="action-desc" style="font-size: 0.85em; color: #ccc; margin-bottom: 10px; text-transform: uppercase;">
+                Generate an invite link to share with your friend
+            </div>
+            <button id="start-war-btn" class="neon-button">INVITE ANYONE</button>
+        </div>
+    </main>
+
+    <script src="static/js/deck_selection.js"></script>
+    <script>
+        function checkAIProgress() {
+            fetch('/api/generation-progress')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.total > 0 && data.progress < 100) {
+                        document.getElementById('ai-progress-container').style.display = 'block';
+                        document.getElementById('ai-progress-fill').style.width = data.progress + '%';
+                        document.getElementById('ai-progress-text').innerText = `${data.progress}% (${data.generated} / ${data.total} portraits)`;
+                    } else {
+                        document.getElementById('ai-progress-container').style.display = 'none';
+                    }
+                })
+                .catch(err => console.error("Could not fetch generation progress:", err));
+        }
+
+        checkAIProgress();
+        setInterval(checkAIProgress, 4000);
+    </script>
+</body>
+
+</html>

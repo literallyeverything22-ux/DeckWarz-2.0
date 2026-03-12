@@ -20,7 +20,7 @@
 
 body {
     background-color: var(--bg-primary);
-    background-image: url('../../Frames/Background/new_cricket_bg.jpg');
+    background-image: url('../images/Frames/Background/new_cricket_bg.jpg');
     background-size: cover;
     background-position: top center;
     background-attachment: fixed;
@@ -42,6 +42,8 @@ body {
     height: 100%;
     z-index: -2;
     pointer-events: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
 
 .background-effects {
@@ -174,6 +176,7 @@ header {
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     transform-style: preserve-3d;
     background: transparent;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .frame {

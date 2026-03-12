@@ -2,7 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 from googlesearch import search
 import time
+from functools import lru_cache
 
+@lru_cache(maxsize=128)
 def get_player_profile(player_name):
     query = f"{player_name} cricbuzz"
     profile_link = None
@@ -115,6 +117,7 @@ def get_player_profile(player_name):
     except Exception as e:
         return {"error": f"Parsing profile failed: {str(e)}"}
 
+@lru_cache(maxsize=1)
 def get_schedule():
     try:
         link = "https://www.cricbuzz.com/cricket-schedule/upcoming-series/international"
@@ -141,6 +144,8 @@ def get_schedule():
     except Exception as e:
         return {"error": f"Fetching schedule failed: {str(e)}"}
 
+# Note: Live matches might want cache clearing in reality, keeping short for now or just standard lru_cache as requested
+@lru_cache(maxsize=1)
 def get_live_matches():
     try:
         link = "https://www.cricbuzz.com/cricket-match/live-scores"
