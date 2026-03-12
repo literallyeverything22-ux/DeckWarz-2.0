@@ -432,15 +432,15 @@
             box-shadow: inset 0 0 30px var(--accent-glow);
         }
 
-        /* Front specific designs */
         .player-image-wrapper {
-            height: 55%;
+            height: 35%;
             width: 100%;
             position: relative;
             background: linear-gradient(to bottom, transparent, #0a0a0f), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect fill="%232a2d3e" width="300" height="300"/></svg>') center/cover;
             display: flex;
             align-items: flex-end;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .player-placeholder {
@@ -457,6 +457,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: top;
             border-radius: 5px 5px 0 0;
             mask-image: linear-gradient(to top, black 70%, transparent);
             -webkit-mask-image: linear-gradient(to top, black 70%, transparent);
@@ -464,10 +465,10 @@
 
         .team-badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 40px;
-            height: 40px;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
             background: var(--team-color);
             border-radius: 50%;
             border: 2px solid #fff;
@@ -476,26 +477,29 @@
             justify-content: center;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 14px;
+            font-size: 10px;
             box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .player-info {
-            height: 45%;
-            padding: 10px;
+            flex: 1;
+            padding: 6px 8px;
             display: flex;
             flex-direction: column;
             background: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4));
             position: relative;
             z-index: 2;
+            overflow-y: auto;
+            scrollbar-width: none;
         }
+        .player-info::-webkit-scrollbar { display: none; }
 
         .role-tag {
             align-self: flex-start;
             background: rgba(255, 255, 255, 0.1);
-            padding: 2px 8px;
+            padding: 1px 6px;
             border-radius: 20px;
-            font-size: 0.65rem;
+            font-size: 0.55rem;
             color: #ccc;
             margin-bottom: 2px;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -503,9 +507,9 @@
 
         .player-name {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1rem;
             font-weight: 900;
-            margin: 0 0 2px 0;
+            margin: 0 0 1px 0;
             line-height: 1.1;
             text-transform: uppercase;
             text-shadow: 0 0 10px var(--accent-glow);
@@ -513,48 +517,69 @@
         }
 
         .player-country {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: var(--team-color);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: auto;
+            margin-bottom: 4px;
         }
+
+        .stats-section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--team-color);
+            text-transform: uppercase;
+            padding: 3px 0 2px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 3px;
+            margin-top: 4px;
+        }
+        .stats-section-header.bowl { color: #ff4757; }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-top: 5px;
-            padding-top: 5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 3px 4px;
+            margin-bottom: 2px;
         }
 
         .stat-item {
             display: flex;
             flex-direction: column;
             cursor: pointer;
-            padding: 2px;
+            padding: 3px 4px;
             border-radius: 4px;
-            transition: background 0.2s;
+            transition: background 0.15s;
+            border: 1px solid transparent;
         }
 
         .stat-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 5px var(--accent-glow);
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--team-color);
+            box-shadow: 0 0 6px var(--accent-glow);
+        }
+        .stat-item.bowl-stat:hover {
+            border-color: #ff4757;
+            box-shadow: 0 0 6px rgba(255,71,87,0.5);
         }
 
         .stat-label {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: #8b8ea5;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             pointer-events: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .stat-value {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #fff;
             pointer-events: none;
@@ -1064,15 +1089,49 @@
         }
 
         function renderCardFront(cardData) {
-            const stats = cardData.stats?.["Batting Statistics"] || {};
-            const matches = stats["Matches Played"] || 0;
-            const runs = stats["Runs / Total Runs"] || 0;
-            const sr = stats["Bating Strike Rate"] || 0;
-            const avg = stats["Average / Batting Average"] || 0;
+            const bat = cardData.stats?.["Batting Statistics"] || {};
+            const bowl = cardData.stats?.["Bowling Statistics"] || {};
 
             const imageHtml = cardData.image_url
                 ? `<img src="${cardData.image_url}" class="player-photo" alt="${cardData.name}" />`
                 : `<div class="player-placeholder"></div>`;
+
+            // ── Batting stat rows ──────────────────────────────
+            const batStats = [
+                ['Matches', bat['Matches Played'], 'Batting Statistics', 'Matches Played'],
+                ['Innings', bat['Innings Played'], 'Batting Statistics', 'Innings Played'],
+                ['Not Outs', bat['Not Outs'], 'Batting Statistics', 'Not Outs'],
+                ['Runs', bat['Runs / Total Runs'], 'Batting Statistics', 'Runs / Total Runs'],
+                ['Highest', bat['Highest Score'], 'Batting Statistics', 'Highest Score'],
+                ['Average', bat['Average / Batting Average'], 'Batting Statistics', 'Average / Batting Average'],
+                ['Balls', bat['Balls Faced'], 'Batting Statistics', 'Balls Faced'],
+                ['Strike Rate', bat['Bating Strike Rate'], 'Batting Statistics', 'Bating Strike Rate'],
+                ['4s', bat['4s'], 'Batting Statistics', '4s'],
+                ['6s', bat['6s'], 'Batting Statistics', '6s'],
+                ['50s', bat['50s'], 'Batting Statistics', '50s'],
+                ['100s', bat['100s'], 'Batting Statistics', '100s'],
+            ];
+
+            // ── Bowling stat rows ──────────────────────────────
+            const bowlStats = [
+                ['Innings Bowled', bowl['Innings Pl.'], 'Bowling Statistics', 'Innings Pl.'],
+                ['Overs', bowl['Overs'], 'Bowling Statistics', 'Overs'],
+                ['Runs Given', bowl['Runs conceded'], 'Bowling Statistics', 'Runs conceded'],
+                ['Wickets', bowl['Wickets'], 'Bowling Statistics', 'Wickets'],
+                ['Best', bowl['Best Bowling'], 'Bowling Statistics', 'Best Bowling'],
+                ['Bowl Avg', bowl['Avg. Ball'], 'Bowling Statistics', 'Avg. Ball'],
+                ['Economy', bowl['Economy / Eco. Rate'], 'Bowling Statistics', 'Economy / Eco. Rate'],
+                ['Bowl SR', bowl['Bowling Strike Rate'], 'Bowling Statistics', 'Bowling Strike Rate'],
+            ];
+
+            const renderStatItems = (stats, isBowling) => stats.map(([label, value, cat, statKey]) => {
+                if (value === undefined || value === null) return '';
+                const cls = isBowling ? 'stat-item bowl-stat' : 'stat-item';
+                return `<div class="${cls}" onclick="playStat('${cat}', '${statKey}')">
+                    <span class="stat-label">${label}</span>
+                    <span class="stat-value">${value}</span>
+                </div>`;
+            }).join('');
 
             const html = `
                 <div class="player-image-wrapper">
@@ -1080,28 +1139,14 @@
                     <div class="team-badge">${cardData.country.substring(0, 3).toUpperCase()}</div>
                 </div>
                 <div class="player-info">
-                    <span class="role-tag">Top Order Batter</span>
                     <h2 class="player-name">${cardData.name}</h2>
                     <div class="player-country">${cardData.country}</div>
 
-                    <div class="stats-grid">
-                        <div class="stat-item" onclick="playStat('Batting Statistics', 'Matches Played')">
-                            <span class="stat-label">Matches</span>
-                            <span class="stat-value">${matches}</span>
-                        </div>
-                        <div class="stat-item" onclick="playStat('Batting Statistics', 'Runs / Total Runs')">
-                            <span class="stat-label">Runs</span>
-                            <span class="stat-value">${runs}</span>
-                        </div>
-                        <div class="stat-item" onclick="playStat('Batting Statistics', 'Bating Strike Rate')">
-                            <span class="stat-label">Strike Rate</span>
-                            <span class="stat-value">${sr}</span>
-                        </div>
-                        <div class="stat-item" onclick="playStat('Batting Statistics', 'Average / Batting Average')">
-                            <span class="stat-label">Average</span>
-                            <span class="stat-value">${avg}</span>
-                        </div>
-                    </div>
+                    <div class="stats-section-header">🏏 Batting</div>
+                    <div class="stats-grid">${renderStatItems(batStats, false)}</div>
+
+                    <div class="stats-section-header bowl">🎳 Bowling</div>
+                    <div class="stats-grid">${renderStatItems(bowlStats, true)}</div>
                 </div>
                 <div class="accent-bar"></div>
             `;
