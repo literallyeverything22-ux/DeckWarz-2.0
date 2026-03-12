@@ -8,15 +8,25 @@ class GameManager:
         self.rooms = {}
         self.cards = self.load_cards(data_path)
 
+    MIN_MATCHES = 20  # Only include players with meaningful T20I experience
+
     def load_cards(self, data_path):
         try:
             with open(data_path, 'r') as f:
                 data = json.load(f)
             cards = []
+            skipped = 0
             for country, players in data.items():
                 for player in players:
+                    matches = (player.get('stats') or {}).get(
+                        'Batting Statistics', {}
+                    ).get('Matches Played', 0) or 0
+                    if matches < self.MIN_MATCHES:
+                        skipped += 1
+                        continue
                     player['country'] = country
                     cards.append(player)
+            print(f"[GameManager] Loaded {len(cards)} cards (skipped {skipped} with <{self.MIN_MATCHES} matches)")
             return cards
         except Exception as e:
             print(f"Error loading cards: {e}")
