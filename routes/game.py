@@ -68,15 +68,19 @@ def register_socket_events(socketio, game_manager):
                     
                     # Opponent info
                     opp_hand_size = 0
+                    opp_top_card_country = None
                     for opid, oplayer in room['players'].items():
                         if opid != pid:
                             opp_hand_size = len(oplayer['hand'])
+                            if oplayer['hand']:
+                                opp_top_card_country = oplayer['hand'][0].get('country')
                             break
                             
                     emit('update_state', {
                         'hand_size': p_hand, 
                         'opp_hand_size': opp_hand_size,
                         'top_card': p_top_card, 
+                        'opp_top_card_country': opp_top_card_country,
                         'hand_countries': hand_countries,
                         'turn': room['current_turn'] == pid
                     }, to=pid)
@@ -106,15 +110,19 @@ def register_socket_events(socketio, game_manager):
             
             # Opponent info
             opp_hand_size = 0
+            opp_top_card_country = None
             for opid, oplayer in room['players'].items():
                 if opid != pid:
                     opp_hand_size = len(oplayer['hand'])
+                    if oplayer['hand']:
+                        opp_top_card_country = oplayer['hand'][0].get('country')
                     break
                     
             emit('update_state', {
                 'hand_size': p_hand, 
                 'opp_hand_size': opp_hand_size,
                 'top_card': p_top_card, 
+                'opp_top_card_country': opp_top_card_country,
                 'hand_countries': hand_countries,
                 'turn': room['current_turn'] == pid
             }, to=pid)
@@ -166,15 +174,19 @@ def register_socket_events(socketio, game_manager):
                     
                     # Opponent info
                     opp_hand_size = 0
+                    opp_top_card_country = None
                     for opid, oplayer in room['players'].items():
                         if opid != pid:
                             opp_hand_size = len(oplayer['hand'])
+                            if oplayer['hand']:
+                                opp_top_card_country = oplayer['hand'][0].get('country')
                             break
                             
                     emit('update_state', {
                         'hand_size': p_hand, 
                         'opp_hand_size': opp_hand_size,
                         'top_card': p_top_card, 
+                        'opp_top_card_country': opp_top_card_country,
                         'hand_countries': hand_countries,
                         'turn': room['current_turn'] == pid
                     }, to=pid)

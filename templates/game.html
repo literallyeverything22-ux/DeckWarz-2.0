@@ -870,9 +870,9 @@
             document.getElementById('my-deck-count').innerText = `Cards: ${handSize}`;
             document.getElementById('opp-deck-count').innerText = `Cards: ${data.opp_hand_size || '?'}`;
 
-            // Update opponent's rare card if country is available
-            if (data.top_card && data.top_card.country) {
-                const code = countryMap[data.top_card.country] || 'IND';
+            // Update opponent's rare card using the OPPONENT'S country, not the player's own
+            if (data.opp_top_card_country) {
+                const code = countryMap[data.opp_top_card_country] || 'IND';
                 document.getElementById('opp-rare-card').style.backgroundImage = `url('/static/images/rare_cards_new/${code}.png')`;
                 // Clear default inner content once image is set
                 document.getElementById('opp-rare-card').innerHTML = '';
