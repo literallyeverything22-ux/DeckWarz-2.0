@@ -1,8 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request
 from flask_socketio import join_room, leave_room, emit
-import json
 import time
-from pathlib import Path
 
 game_bp = Blueprint('game', __name__)
 
@@ -13,32 +11,6 @@ def index():
 @game_bp.route('/game')
 def game():
     return render_template('game.html')
-
-@game_bp.route('/api/generation-progress')
-def generation_progress():
-    MASTER_JSON_PATH = Path("data/t20i_players_stats_merged.json")
-    if not MASTER_JSON_PATH.exists():
-        return jsonify({"progress": 0, "total": 0, "generated": 0})
-        
-    try:
-        with open(MASTER_JSON_PATH, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-            
-        total_players = 0
-        generated_images = 0
-        
-        for country, players in data.items():
-            total_players += len(players)
-            generated_images += sum(1 for p in players if 'image_url' in p and p['image_url'])
-            
-        progress = (generated_images / total_players * 100) if total_players > 0 else 0
-        return jsonify({
-            "progress": round(progress, 1),
-            "total": total_players,
-            "generated": generated_images
-        })
-    except Exception as e:
-        return jsonify({"progress": 0, "total": 0, "generated": 0, "error": str(e)})
 
 def register_socket_events(socketio, game_manager):
     @socketio.on('disconnect')

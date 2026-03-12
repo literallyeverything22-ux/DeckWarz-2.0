@@ -1,6 +1,4 @@
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint
 
 hub_bp = Blueprint('hub', __name__)
-
-# The root "/" is handled by routes/game.py (deck selection page)
-# This blueprint is kept for future API hub endpoints
+# Hub blueprint — reserved for future API endpoints (player stats, leaderboards, etc.)
