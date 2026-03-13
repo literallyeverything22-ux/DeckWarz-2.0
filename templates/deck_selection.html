@@ -6,181 +6,437 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeckWarz - Choose Your Nation</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Orbitron:wght@700;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ── STEP SCREENS ────────────────────────────────── */
+        .step-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .step-screen.active { display: flex; }
+
+        .step-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #00f3ff, #b620e0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .step-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        /* ── USERNAME SCREEN ────────────────────────────── */
+        .username-input-wrap {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .username-input {
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0,243,255,0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            width: 280px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+        }
+        .username-input::placeholder { color: #555; }
+        .username-input:focus { border-color: #00f3ff; box-shadow: 0 0 12px rgba(0,243,255,0.2); }
+
+        .btn-primary {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #00f3ff, #b620e0);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0,243,255,0.4); }
+
+        /* ── NATION COUNT SCREEN ────────────────────────── */
+        .nation-count-grid {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .count-btn {
+            width: 90px;
+            height: 90px;
+            border-radius: 16px;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .count-btn span.label {
+            font-size: 0.5rem;
+            letter-spacing: 2px;
+            color: #888;
+            font-family: 'Outfit', sans-serif;
+        }
+        .count-btn:hover, .count-btn.selected {
+            border-color: #00f3ff;
+            background: rgba(0,243,255,0.1);
+            box-shadow: 0 0 20px rgba(0,243,255,0.3);
+            transform: scale(1.08);
+        }
+        .count-btn.selected { border-color: #b620e0; background: rgba(182,32,224,0.15); }
+
+        /* ── PROFILE CHIP ───────────────────────────────── */
+        #profile-chip {
+            position: fixed;
+            top: 18px;
+            right: 20px;
+            background: rgba(10,10,20,0.85);
+            border: 1px solid rgba(0,243,255,0.2);
+            border-radius: 40px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        #profile-chip:hover { border-color: rgba(0,243,255,0.5); }
+        .chip-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .chip-stat { display: flex; flex-direction: column; align-items: center; gap: 1px; }
+        .chip-stat .s-val {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+        }
+        .chip-stat .s-lbl {
+            font-size: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #888;
+        }
+        .chip-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); }
+    </style>
 </head>
 
 <body>
-    <!-- Overlay that blurs the background but leaves the top (logo area) clear -->
+    <!-- Background -->
     <div class="bg-blur-overlay"></div>
-
     <div class="background-effects">
         <div class="glow-orb orb-1"></div>
         <div class="glow-orb orb-2"></div>
     </div>
 
-    <main class="arena-container">
-        <header>
-            <img src="/static/images/Frames/Background/Name.png" alt="DECK WARZ - SELECT YOUR NATION" class="main-logo">
-        </header>
-
-        <div class="deck-grid">
-
-            <!-- India -->
-            <div class="deck-wrapper" style="--deck-color: #00a8ff;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/IND start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/IND end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">India</h3>
-            </div>
-
-            <!-- Australia -->
-            <div class="deck-wrapper" style="--deck-color: #FFCD00;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/AUS start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/AUS end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Australia</h3>
-            </div>
-
-            <!-- England -->
-            <div class="deck-wrapper" style="--deck-color: #ff4757;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/ENG start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/ENG end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">England</h3>
-            </div>
-
-            <!-- Pakistan -->
-            <div class="deck-wrapper" style="--deck-color: #2ed573;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/PCB start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/PCB end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Pakistan</h3>
-            </div>
-
-            <!-- South Africa -->
-            <div class="deck-wrapper" style="--deck-color: #2bad60;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/SA start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/SA end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">South Africa</h3>
-            </div>
-
-            <!-- New Zealand -->
-            <div class="deck-wrapper" style="--deck-color: #dfdfdf;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/NZ start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/NZ end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">New Zealand</h3>
-            </div>
-
-            <!-- Sri Lanka -->
-            <div class="deck-wrapper" style="--deck-color: #1e90ff;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/SL start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/SL end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Sri Lanka</h3>
-            </div>
-
-            <!-- West Indies -->
-            <div class="deck-wrapper" style="--deck-color: #ff6b81;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/WI start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/WI end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">West Indies</h3>
-            </div>
-
-            <!-- Bangladesh -->
-            <div class="deck-wrapper" style="--deck-color: #2ed573;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/BNG start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/BNG end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Bangladesh</h3>
-            </div>
-
-            <!-- Afghanistan -->
-            <div class="deck-wrapper" style="--deck-color: #5352ed;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/AFG start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/AFG end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Afghanistan</h3>
-            </div>
-
-            <!-- Ireland -->
-            <div class="deck-wrapper" style="--deck-color: #7bed9f;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/IRE start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/IRE end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Ireland</h3>
-            </div>
-
-            <!-- Zimbabwe -->
-            <div class="deck-wrapper" style="--deck-color: #ff4757;">
-                <div class="deck-card">
-                    <img src="/static/images/Frames/ZIM start.png" class="frame start-frame">
-                    <img src="/static/images/Frames/ZIM end.png" class="frame end-frame">
-                    <div class="interactive-glow"></div>
-                </div>
-                <h3 class="country-label">Zimbabwe</h3>
-            </div>
-
+    <!-- Profile Chip (top right, always visible after username set) -->
+    <div id="profile-chip" style="display:none;" onclick="resetUsername()">
+        <div class="chip-name" id="chip-username">PLAYER</div>
+        <div class="chip-divider"></div>
+        <div class="chip-stat">
+            <span class="s-val" id="chip-wins" style="color:#2ed573;">0</span>
+            <span class="s-lbl">Wins</span>
         </div>
-
-        <!-- Action Bar for Start War Button -->
-        <div class="action-bar hidden" id="action-bar">
-            <div class="selection-counter">
-                <span id="selected-count">0</span> / 5 NATIONS SELECTED
-            </div>
-            <div id="action-desc" style="font-size: 0.85em; color: #ccc; margin-bottom: 10px; text-transform: uppercase;">
-                Generate an invite link to share with your friend
-            </div>
-            <button id="start-war-btn" class="neon-button">INVITE ANYONE</button>
+        <div class="chip-stat">
+            <span class="s-val" id="chip-losses" style="color:#ff4757;">0</span>
+            <span class="s-lbl">Losses</span>
         </div>
-    </main>
+    </div>
 
-    <script src="static/js/deck_selection.js"></script>
+    <!-- ══ STEP 1: USERNAME ════════════════════════════════ -->
+    <div id="step-username" class="step-screen active">
+        <div class="step-title">WELCOME TO DECKWARZ</div>
+        <p class="step-subtitle">Enter a name to track your wins and losses</p>
+        <div class="username-input-wrap">
+            <input type="text" id="username-input" class="username-input"
+                placeholder="Your callsign…" maxlength="20" autocomplete="off">
+            <button class="btn-primary" onclick="setUsername()">LET'S GO →</button>
+        </div>
+        <p style="color:#555; font-size:0.75rem; margin-top:20px;">Stored locally — no account needed</p>
+    </div>
+
+    <!-- ══ STEP 2: NATION COUNT ════════════════════════════ -->
+    <div id="step-count" class="step-screen">
+        <div class="step-title">HOW MANY NATIONS?</div>
+        <p class="step-subtitle">Choose the size of your deck pool (1 – 5 nations)</p>
+        <div class="nation-count-grid">
+            <button class="count-btn" onclick="selectCount(1)">1<span class="label">NATION</span></button>
+            <button class="count-btn" onclick="selectCount(2)">2<span class="label">NATIONS</span></button>
+            <button class="count-btn" onclick="selectCount(3)">3<span class="label">NATIONS</span></button>
+            <button class="count-btn" onclick="selectCount(4)">4<span class="label">NATIONS</span></button>
+            <button class="count-btn selected" onclick="selectCount(5)">5<span class="label">NATIONS</span></button>
+        </div>
+        <p style="color:#555; font-size:0.8rem; margin-bottom: 28px;">
+            More nations = bigger, more varied deck
+        </p>
+        <button class="btn-primary" onclick="goToPicker()">PICK MY NATIONS →</button>
+    </div>
+
+    <!-- ══ STEP 3: DECK PICKER ═════════════════════════════ -->
+    <div id="step-picker" class="step-screen">
+        <main class="arena-container" style="width:100%;">
+            <header>
+                <img src="/static/images/Frames/Background/Name.png" alt="DECK WARZ - SELECT YOUR NATION" class="main-logo">
+            </header>
+
+            <div id="selection-hint" style="font-family:'Orbitron',sans-serif; font-size:0.75rem; color:#888;
+                letter-spacing:2px; margin-bottom:18px; text-transform:uppercase;">
+                Select <span id="hint-count">5</span> nations
+            </div>
+
+            <div class="deck-grid">
+                <!-- India -->
+                <div class="deck-wrapper" style="--deck-color: #00a8ff;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/IND start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/IND end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">India</h3>
+                </div>
+                <!-- Australia -->
+                <div class="deck-wrapper" style="--deck-color: #FFCD00;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/AUS start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/AUS end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Australia</h3>
+                </div>
+                <!-- England -->
+                <div class="deck-wrapper" style="--deck-color: #ff4757;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/ENG start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/ENG end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">England</h3>
+                </div>
+                <!-- Pakistan -->
+                <div class="deck-wrapper" style="--deck-color: #2ed573;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/PCB start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/PCB end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Pakistan</h3>
+                </div>
+                <!-- South Africa -->
+                <div class="deck-wrapper" style="--deck-color: #2bad60;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/SA start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/SA end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">South Africa</h3>
+                </div>
+                <!-- New Zealand -->
+                <div class="deck-wrapper" style="--deck-color: #dfdfdf;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/NZ start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/NZ end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">New Zealand</h3>
+                </div>
+                <!-- Sri Lanka -->
+                <div class="deck-wrapper" style="--deck-color: #1e90ff;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/SL start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/SL end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Sri Lanka</h3>
+                </div>
+                <!-- West Indies -->
+                <div class="deck-wrapper" style="--deck-color: #ff6b81;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/WI start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/WI end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">West Indies</h3>
+                </div>
+                <!-- Bangladesh -->
+                <div class="deck-wrapper" style="--deck-color: #2ed573;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/BNG start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/BNG end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Bangladesh</h3>
+                </div>
+                <!-- Afghanistan -->
+                <div class="deck-wrapper" style="--deck-color: #5352ed;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/AFG start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/AFG end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Afghanistan</h3>
+                </div>
+                <!-- Ireland -->
+                <div class="deck-wrapper" style="--deck-color: #7bed9f;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/IRE start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/IRE end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Ireland</h3>
+                </div>
+                <!-- Zimbabwe -->
+                <div class="deck-wrapper" style="--deck-color: #ff4757;">
+                    <div class="deck-card">
+                        <img src="/static/images/Frames/ZIM start.png" class="frame start-frame">
+                        <img src="/static/images/Frames/ZIM end.png" class="frame end-frame">
+                        <div class="interactive-glow"></div>
+                    </div>
+                    <h3 class="country-label">Zimbabwe</h3>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar hidden" id="action-bar">
+                <div class="selection-counter">
+                    <span id="selected-count">0</span> / <span id="max-count">5</span> NATIONS SELECTED
+                </div>
+                <div id="action-desc" style="font-size: 0.85em; color: #ccc; margin-bottom: 10px; text-transform: uppercase;">
+                    Generate an invite link to share with your friend
+                </div>
+                <button id="start-war-btn" class="neon-button">INVITE ANYONE</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/deck_selection.js"></script>
     <script>
-        function checkAIProgress() {
-            fetch('/api/generation-progress')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.total > 0 && data.progress < 100) {
-                        document.getElementById('ai-progress-container').style.display = 'block';
-                        document.getElementById('ai-progress-fill').style.width = data.progress + '%';
-                        document.getElementById('ai-progress-text').innerText = `${data.progress}% (${data.generated} / ${data.total} portraits)`;
-                    } else {
-                        document.getElementById('ai-progress-container').style.display = 'none';
-                    }
-                })
-                .catch(err => console.error("Could not fetch generation progress:", err));
+        // ── PROFILE / localStorage ──────────────────────────
+        const STORAGE = {
+            username: 'dw_username',
+            wins:     'dw_wins',
+            losses:   'dw_losses',
+            count:    'dw_nation_count'
+        };
+
+        function getProfile() {
+            return {
+                username: localStorage.getItem(STORAGE.username) || '',
+                wins:     parseInt(localStorage.getItem(STORAGE.wins) || '0'),
+                losses:   parseInt(localStorage.getItem(STORAGE.losses) || '0'),
+                count:    parseInt(localStorage.getItem(STORAGE.count) || '5')
+            };
         }
 
-        checkAIProgress();
-        setInterval(checkAIProgress, 4000);
+        function updateChip() {
+            const p = getProfile();
+            if (!p.username) return;
+            document.getElementById('chip-username').innerText = p.username.toUpperCase();
+            document.getElementById('chip-wins').innerText = p.wins;
+            document.getElementById('chip-losses').innerText = p.losses;
+            document.getElementById('profile-chip').style.display = 'flex';
+        }
+
+        function resetUsername() {
+            if (!confirm('Reset your callsign? Your W/L record will be kept.')) return;
+            localStorage.removeItem(STORAGE.username);
+            showStep('step-username');
+            document.getElementById('profile-chip').style.display = 'none';
+        }
+
+        // ── STEP NAVIGATION ─────────────────────────────────
+        function showStep(id) {
+            document.querySelectorAll('.step-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function setUsername() {
+            const val = document.getElementById('username-input').value.trim();
+            if (!val) {
+                document.getElementById('username-input').focus();
+                return;
+            }
+            localStorage.setItem(STORAGE.username, val);
+            updateChip();
+            showStep('step-count');
+            // restore previously chosen count selection
+            const saved = parseInt(localStorage.getItem(STORAGE.count) || '5');
+            selectCount(saved, true);
+        }
+
+        let chosenCount = parseInt(localStorage.getItem(STORAGE.count) || '5');
+
+        function selectCount(n, silent) {
+            chosenCount = n;
+            if (!silent) localStorage.setItem(STORAGE.count, n);
+            document.querySelectorAll('.count-btn').forEach((btn, i) => {
+                btn.classList.toggle('selected', (i + 1) === n);
+            });
+        }
+
+        function goToPicker() {
+            localStorage.setItem(STORAGE.count, chosenCount);
+            // update the MAX_SELECTIONS in deck_selection.js via global var
+            window._maxSelections = chosenCount;
+            document.getElementById('hint-count').innerText = chosenCount;
+            document.getElementById('max-count').innerText = chosenCount;
+            document.getElementById('selected-count').innerText = '0';
+            // Reset any previous selections
+            document.querySelectorAll('.deck-wrapper.selected').forEach(el => el.classList.remove('selected'));
+            document.getElementById('action-bar').classList.add('hidden');
+            showStep('step-picker');
+        }
+
+        // ── USERNAME INPUT: allow Enter key ──────────────────
+        document.getElementById('username-input').addEventListener('keydown', e => {
+            if (e.key === 'Enter') setUsername();
+        });
+
+        // ── BOOT: skip username if already set ──────────────
+        window.addEventListener('DOMContentLoaded', () => {
+            const p = getProfile();
+            updateChip();
+            if (p.username) {
+                selectCount(p.count, true);
+                showStep('step-count');
+            }
+            // initialise count buttons correctly
+            selectCount(p.count, true);
+        });
     </script>
 </body>
-
 </html>

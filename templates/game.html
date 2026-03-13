@@ -925,7 +925,29 @@
 
         socket.on('game_over', (data) => {
             document.getElementById('status-panel').innerText = data.msg;
-            alert(data.msg);
+
+            // Record win or loss in localStorage
+            const myUser = urlParams.get('user') || localStorage.getItem('dw_username') || '';
+            if (myUser && data.msg) {
+                const won = data.msg.toLowerCase().includes(myUser.toLowerCase());
+                const winsKey = 'dw_wins', lossKey = 'dw_losses';
+                if (won) {
+                    localStorage.setItem(winsKey, (parseInt(localStorage.getItem(winsKey) || '0') + 1));
+                } else {
+                    localStorage.setItem(lossKey, (parseInt(localStorage.getItem(lossKey) || '0') + 1));
+                }
+            }
+
+            // Show result overlay instead of alert
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:20px;';
+            const icon = data.msg.toLowerCase().includes(myUser?.toLowerCase()) ? '🏆' : '💀';
+            overlay.innerHTML = `
+                <div style="font-family:'Orbitron',sans-serif;font-size:3rem;">${icon}</div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:900;color:#fff;text-align:center;max-width:500px;">${data.msg}</div>
+                <button onclick="window.location.href='/'" style="padding:14px 32px;background:linear-gradient(135deg,#00f3ff,#b620e0);border:none;border-radius:10px;color:#000;font-family:'Orbitron',sans-serif;font-size:0.9rem;font-weight:900;cursor:pointer;letter-spacing:2px;margin-top:10px;">PLAY AGAIN</button>
+            `;
+            document.body.appendChild(overlay);
         });
 
         // Read selected decks from URL if they exist
@@ -943,19 +965,21 @@
         function joinRoom() {
             let room = urlParams.get('room');
             if (!room) {
-                // Generate a random room ID and redirect so they have a link to share
-                room = "room_" + Math.random().toString(36).substring(2, 8);
+                room = 'room_' + Math.random().toString(36).substring(2, 8);
                 window.location.search = `?room=${room}`;
                 return;
             }
 
-            const user = "Player_" + Math.floor(Math.random() * 9000 + 1000);
+            // Use username from URL (passed by deck_selection) or fallback
+            const urlUser = urlParams.get('user');
+            const storedUser = localStorage.getItem('dw_username');
+            const user = urlUser || storedUser || ('Player_' + Math.floor(Math.random() * 9000 + 1000));
             myRoom = room;
 
             socket.emit('join', { username: user, room: room, nations: selectedDecks });
 
-            // Display the invite link pointing to the root page so friend can pick deck first
-            const inviteUrl = window.location.origin + "/?room=" + room;
+            // Display invite link
+            const inviteUrl = window.location.origin + '/?room=' + room;
             document.getElementById('invite-link-display').value = inviteUrl;
         }
 
